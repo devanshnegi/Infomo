@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Infomo – Advertising & Customer Intelligence Infrastructure Dossier 2026–2027</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --black:#0a0a0a; --navy:#0A0E1A; --surface:#111827; --white:#ffffff;
+  --muted:#9CA3AF; --dim:#4B5563; --teal:#06B6D4; --blue:#3B82F6;
+  --indigo:#6366F1; --purple:#8B5CF6; --cyan:#22D3EE;
+  --teal-glow:rgba(6,182,212,0.3); --teal-soft:rgba(6,182,212,0.08);
+  --border:rgba(255,255,255,0.06); --glass:rgba(17,24,39,0.85);
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--navy);color:var(--white);font-family:'Space Grotesk',sans-serif}
+#deck{width:100vw;height:100vh;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;width:100%;height:100%;opacity:0;visibility:hidden;transition:opacity .5s ease,transform .5s ease;transform:scale(0.96);overflow-y:auto;overflow-x:hidden;will-change:transform,opacity;display:flex;flex-direction:column;justify-content:center;padding:20px;-webkit-overflow-scrolling:touch}
+.slide.active{opacity:1;visibility:visible;transform:scale(1);z-index:2}
+.slide.leaving{opacity:0;transform:scale(0.94);z-index:1}
+
+.slide-inner{width:100%;max-width:1200px;margin:0 auto;padding:20px 10px;position:relative;z-index:10}
+.slide-inner-center{text-align:center}
+.slide-inner-left{text-align:left}
+
+/* Infomo Brand Typography */
+.headline{font-family:'Inter',sans-serif;font-size:clamp(30px,8vw,72px);line-height:.95;font-weight:800;letter-spacing:-0.02em;color:var(--white)}
+.headline-teal{background:linear-gradient(135deg,var(--teal),var(--blue),var(--indigo));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.headline-sm{font-family:'Inter',sans-serif;font-size:clamp(24px,5.5vw,48px);line-height:.95;font-weight:700;letter-spacing:-0.02em;color:var(--white)}
+.sub{font-size:clamp(12px,1.8vw,17px);color:var(--muted);font-weight:300;line-height:1.6;max-width:100%}
+.label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);font-weight:600}
+.insight{font-size:clamp(11px,1.5vw,15px);color:rgba(255,255,255,0.7);font-weight:300;line-height:1.7;max-width:100%}
+.stat-big{font-family:'Inter',sans-serif;font-size:clamp(40px,11vw,88px);font-weight:800;line-height:1;letter-spacing:-0.03em}
+.stat-teal{background:linear-gradient(135deg,var(--teal),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-cyan{color:var(--cyan)}
+
+/* Glass */
+.glass{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:12px;padding:16px 20px}
+.glass-teal{border-color:rgba(6,182,212,0.2)}
+.glass-indigo{border-color:rgba(99,102,241,0.15)}
+
+.row{display:flex;flex-wrap:wrap;gap:14px;margin:10px 0}
+.col{flex:1 1 200px;min-width:140px}
+.col-full{flex:1 1 100%}
+
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--muted)}
+.pill-teal{border-color:rgba(6,182,212,0.25);color:var(--teal)}
+.pill-indigo{border-color:rgba(99,102,241,0.2);color:var(--indigo)}
+.pill-cyan{border-color:rgba(34,211,238,0.15);color:var(--cyan)}
+.pill-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal-glow)}
+
+.hline{width:50px;height:2px;background:var(--teal);margin:12px 0;box-shadow:0 0 10px var(--teal-glow)}
+.hline-center{margin:12px auto}
+
+.act-tag{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.act-tag span{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);font-weight:600}
+.act-tag::after{content:'';width:25px;height:1px;background:var(--teal);opacity:.4}
+
+.slide-num{font-family:'Inter',sans-serif;font-size:13px;letter-spacing:3px;color:var(--dim);margin-top:16px;text-align:right;font-weight:300}
+
+#controls{position:fixed;bottom:0;left:0;right:0;z-index:100;pointer-events:none}
+#progress{width:100%;height:2px;background:rgba(255,255,255,0.06)}
+#progress-bar{height:100%;background:linear-gradient(90deg,var(--teal),var(--blue),var(--indigo));transition:width .4s ease;box-shadow:0 0 10px var(--teal-glow)}
+#counter{position:fixed;top:14px;right:16px;z-index:100;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:2px;color:var(--dim);font-weight:300}
+#nav-hint{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);z-index:100;font-size:9px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;opacity:0;transition:opacity 1s;pointer-events:none;white-space:nowrap;font-weight:300}
+#nav-hint.show{opacity:1}
+.nav-zone{position:fixed;top:0;bottom:0;width:60px;z-index:90;cursor:pointer}
+@media (pointer:coarse){.nav-zone{width:80px}}
+.nav-left{left:0}
+.nav-right{right:0}
+
+/* Infomo Backgrounds */
+.bg-navy{background:linear-gradient(180deg,#0A0E1A,#111827)}
+.bg-navy-glow{background:radial-gradient(ellipse at 50% 30%,rgba(6,182,212,0.06),transparent 60%),#0A0E1A}
+.bg-teal-glow{background:radial-gradient(ellipse at 50% 50%,rgba(6,182,212,0.05),transparent 50%),#0A0E1A}
+.bg-gradient{background:linear-gradient(135deg,#0A0E1A,#111827 40%,#1a1a2e 70%,#0A0E1A)}
+.bg-gradient-accent{background:linear-gradient(135deg,#0A0E1A,#1a1a3e,#0A0E1A)}
+
+/* Data Spine Animation */
+.data-spine{position:absolute;inset:0;pointer-events:none;overflow:hidden;opacity:0.3}
+.spine-line{position:absolute;height:1px;background:linear-gradient(90deg,transparent,var(--teal),var(--blue),transparent);animation:spineFlow 4s infinite linear}
+.spine-line:nth-child(1){top:20%;width:60%;left:20%;animation-delay:0s}
+.spine-line:nth-child(2){top:45%;width:80%;left:10%;animation-delay:1.5s}
+.spine-line:nth-child(3){top:70%;width:50%;left:25%;animation-delay:3s}
+.spine-dot{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--teal);box-shadow:0 0 12px var(--teal-glow);animation:dotPulse 2s infinite}
+.spine-dot:nth-child(4){top:20%;left:20%;animation-delay:0.3s}
+.spine-dot:nth-child(5){top:45%;left:50%;animation-delay:1s}
+.spine-dot:nth-child(6){top:70%;left:70%;animation-delay:2s}
+@keyframes spineFlow{0%{transform:translateX(-100%) scaleX(0.5)}50%{transform:translateX(0%) scaleX(1)}100%{transform:translateX(100%) scaleX(0.5)}}
+@keyframes dotPulse{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:1;transform:scale(2)}}
+
+/* Logo wrapper */
+.logo-wrapper{display:flex;align-items:center;gap:12px;justify-content:center;margin:0 auto 16px;}
+.logo-wrapper img{height:50px;width:auto;object-fit:contain;}
+.logo-mark{display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-weight:800;font-size:28px;letter-spacing:-0.03em;}
+.logo-mark .inf{color:var(--white)}
+.logo-mark .omo{background:linear-gradient(135deg,var(--teal),var(--blue),var(--indigo));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+.scroll-content{overflow-y:auto;max-height:70vh;padding-right:4px}
+.scroll-content::-webkit-scrollbar{width:3px}
+.scroll-content::-webkit-scrollbar-track{background:transparent}
+.scroll-content::-webkit-scrollbar-thumb{background:var(--teal);border-radius:4px}
+
+@media(max-width:768px){
+  .slide{padding:12px}
+  .slide-inner{padding:10px 6px}
+  .row{gap:8px}
+  .col{min-width:100px;flex:1 1 45%}
+  .glass{padding:12px 14px}
+  .headline{font-size:clamp(24px,6vw,38px)}
+  .headline-sm{font-size:clamp(20px,4.5vw,30px)}
+  #counter{font-size:10px;top:10px;right:12px}
+  .nav-zone{width:50px}
+  .slide-num{font-size:11px}
+  .logo-wrapper img{height:35px}
+  .logo-mark{font-size:20px}
+}
+@media(max-width:480px){
+  .slide{padding:8px}
+  .slide-inner{padding:6px 4px}
+  .col{min-width:80px;flex:1 1 100%}
+  .glass{padding:10px 12px}
+  .headline{font-size:clamp(20px,5vw,28px)}
+  .headline-sm{font-size:clamp(18px,4vw,24px)}
+  .sub{font-size:11px}
+  .insight{font-size:10px}
+  .pill{font-size:10px;padding:3px 10px}
+  .stat-big{font-size:clamp(30px,8vw,48px)}
+  .logo-wrapper img{height:28px}
+  .logo-mark{font-size:16px}
+}
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+<!-- ==================== SLIDE 1: TITLE ==================== -->
+<section class="slide" data-slide="0">
+  <div class="bg-gradient" style="position:absolute;inset:0"></div>
+  <div class="data-spine"><div class="spine-line"></div><div class="spine-line"></div><div class="spine-line"></div><div class="spine-dot"></div><div class="spine-dot"></div><div class="spine-dot"></div></div>
+  <div class="slide-inner slide-inner-center" style="position:relative;z-index:10">
+    <!-- LOGO: loads from official URL, falls back to text if image fails -->
+    <div class="logo-wrapper">
+      <img 
+        src="https://www.infomo.com/frontend/images/logo-colour-1000x250.png" 
+        alt="Infomo Logo" 
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+      />
+      <div class="logo-mark" style="display:none;">
+        <span class="inf">Inf</span><span class="omo">omo</span>
+      </div>
+    </div>
+    <div class="label" style="margin-bottom:12px">Advertising &amp; Customer Intelligence Infrastructure · Dossier 2026–2027</div>
+    <h1 class="headline" style="max-width:900px;margin:0 auto">Connect <span class="headline-teal">Intelligence</span>.<br>Orchestrate <span class="headline-teal">Advertising</span>.<br>Deliver <span class="headline-teal">Outcomes</span>.</h1>
+    <div class="hline hline-center"></div>
+    <p class="sub" style="max-width:640px;margin:12px auto">The intelligence and orchestration layer that enables organizations to connect data, activate audiences, optimize campaigns, and maximize the value of their digital assets.</p>
+    <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center">
+      <span class="pill pill-teal"><span class="pill-dot"></span>AdTech</span>
+      <span class="pill pill-teal"><span class="pill-dot"></span>Data Intelligence</span>
+      <span class="pill pill-indigo"><span class="pill-dot" style="background:var(--indigo);box-shadow:0 0 8px rgba(99,102,241,0.3)"></span>AI-Native</span>
+      <span class="pill pill-cyan"><span class="pill-dot" style="background:var(--cyan);box-shadow:0 0 8px rgba(34,211,238,0.3)"></span>Privacy by Design</span>
+    </div>
+    <div class="slide-num">01 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 2: POSITIONING ==================== -->
+<section class="slide" data-slide="1">
+  <div class="bg-navy" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part I — Foundations</span></div>
+    <h2 class="headline-sm">Positioning Statement &amp; <span class="headline-teal">Core Thesis</span></h2>
+    <div class="hline"></div>
+    <p class="sub" style="max-width:700px">Infomo is a global ad-tech pioneer that combines telco ID and data with powerful AI-based advertising optimization tools — enabling telecom carriers, publishers, agencies, and brands to compete with the digital giants.</p>
+    <div class="row" style="margin-top:16px">
+      <div class="col glass glass-teal">
+        <span style="font-family:'Inter',sans-serif;font-size:28px;font-weight:800;color:var(--teal)">01</span>
+        <p style="font-size:13px;color:var(--muted);margin-top:4px">Founded in Melbourne, headquartered in Singapore — operating across Australia, India, Indonesia, and Vietnam</p>
+      </div>
+      <div class="col glass glass-teal">
+        <span style="font-family:'Inter',sans-serif;font-size:28px;font-weight:800;color:var(--teal)">02</span>
+        <p style="font-size:13px;color:var(--muted);margin-top:4px">AI-Native, composable infrastructure — deployed only the capabilities you need</p>
+      </div>
+      <div class="col glass glass-teal">
+        <span style="font-family:'Inter',sans-serif;font-size:28px;font-weight:800;color:var(--teal)">03</span>
+        <p style="font-size:13px;color:var(--muted);margin-top:4px">Privacy by Design — sovereign, privacy-safe activation with enterprise-grade security</p>
+      </div>
+    </div>
+    <div class="slide-num">02 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 3: THE INFOMO ECOSYSTEM ==================== -->
+<section class="slide" data-slide="2">
+  <div class="bg-navy-glow" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part I — Foundations</span></div>
+    <h2 class="headline-sm">The <span class="headline-teal">Infomo</span> Ecosystem</h2>
+    <div class="hline"></div>
+    <p class="insight">A unified platform where AI agents, data, and workflows converge — delivering intelligence and orchestration across the entire advertising lifecycle.</p>
+    <div class="row" style="margin-top:12px">
+      <div class="col glass glass-teal" style="text-align:center;flex:1">
+        <span style="font-size:28px;font-weight:800;color:var(--teal)">Data Spine</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Persistent layer connecting data across the digital ecosystem</p>
+      </div>
+      <div class="col glass" style="text-align:center;flex:1">
+        <span style="font-size:28px;font-weight:800;color:var(--blue)">Agentic Orchestration</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">AI agents automating planning, decisioning, and execution</p>
+      </div>
+      <div class="col glass" style="text-align:center;flex:1">
+        <span style="font-size:28px;font-weight:800;color:var(--indigo)">Cross-Platform Activation</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Search, social, programmatic, retail media, and emerging channels</p>
+      </div>
+      <div class="col glass" style="text-align:center;flex:1">
+        <span style="font-size:28px;font-weight:800;color:var(--cyan)">Unified Measurement</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Single framework for attribution, analytics, and performance</p>
+      </div>
+    </div>
+    <div class="glass glass-teal" style="margin-top:10px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:rgba(255,255,255,0.85)"><span style="color:var(--teal);font-weight:600">The Infomo Difference:</span> "Infrastructure you control — sovereign, private, composable, and AI-native by design."</p>
+    </div>
+    <div class="slide-num">03 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 4: BRAND IDENTITY ==================== -->
+<section class="slide" data-slide="3">
+  <div class="bg-gradient-accent" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-center">
+    <div class="act-tag" style="justify-content:center"><span>Brand Identity</span></div>
+    <h2 class="headline-sm">Visual Language &amp; <span class="headline-teal">Design System</span></h2>
+    <div class="hline hline-center"></div>
+    <div style="display:flex;flex-wrap:wrap;gap:20px;justify-content:center;margin-top:16px">
+      <div class="glass glass-teal" style="text-align:center;flex:1;min-width:140px;padding:20px">
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;">
+          <img src="https://www.infomo.com/frontend/images/logo-colour-1000x250.png" alt="Infomo Logo" style="height:40px;width:auto;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+          <div style="display:none;font-family:'Inter',sans-serif;font-size:24px;font-weight:800;letter-spacing:-0.03em;">
+            <span style="color:var(--white)">Inf</span><span style="background:linear-gradient(135deg,var(--teal),var(--blue),var(--indigo));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">omo</span>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--muted);margin-top:6px">Logo — Teal + Blue Gradient</p>
+      </div>
+      <div class="glass" style="text-align:center;flex:1;min-width:140px;padding:20px">
+        <div style="display:flex;gap:8px;justify-content:center;margin-bottom:6px">
+          <span style="display:inline-block;width:30px;height:30px;border-radius:6px;background:#06B6D4"></span>
+          <span style="display:inline-block;width:30px;height:30px;border-radius:6px;background:#3B82F6"></span>
+          <span style="display:inline-block;width:30px;height:30px;border-radius:6px;background:#6366F1"></span>
+          <span style="display:inline-block;width:30px;height:30px;border-radius:6px;background:#8B5CF6"></span>
+        </div>
+        <p style="font-size:11px;color:var(--muted)">Primary Palette — Teal → Blue → Indigo → Purple</p>
+      </div>
+      <div class="glass" style="text-align:center;flex:1;min-width:140px;padding:20px">
+        <div style="font-family:'Inter',sans-serif;font-size:22px;font-weight:700;color:var(--white)">Inter</div>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Typography — Clean, Modern, Tech-First</p>
+      </div>
+      <div class="glass" style="text-align:center;flex:1;min-width:140px;padding:20px">
+        <div style="font-size:28px;color:var(--teal);margin-bottom:4px">● ─── ●</div>
+        <p style="font-size:11px;color:var(--muted)">Data Spine — Connecting Intelligence</p>
+      </div>
+    </div>
+    <div class="glass glass-teal" style="margin-top:14px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:rgba(255,255,255,0.85)"><span style="color:var(--teal);font-weight:600">Tagline:</span> "Connect Intelligence. Orchestrate Advertising. Deliver Outcomes." — reflecting the company's mission to transform data into measurable business outcomes.</p>
+    </div>
+    <div class="slide-num">04 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 5: COMPANY OVERVIEW ==================== -->
+<section class="slide" data-slide="4">
+  <div class="bg-navy" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part II — Company Overview</span></div>
+    <h2 class="headline-sm">Company <span class="headline-teal">Overview</span></h2>
+    <div class="hline"></div>
+    <div class="row" style="margin-top:12px">
+      <div class="col glass glass-teal" style="text-align:center"><span style="font-size:13px;color:var(--muted)">Founded</span><p style="font-size:18px;font-weight:700;color:var(--white)">2017</p></div>
+      <div class="col glass" style="text-align:center"><span style="font-size:13px;color:var(--muted)">Headquarters</span><p style="font-size:18px;font-weight:700;color:var(--white)">Singapore</p></div>
+      <div class="col glass" style="text-align:center"><span style="font-size:13px;color:var(--muted)">Founded In</span><p style="font-size:18px;font-weight:700;color:var(--white)">Melbourne</p></div>
+      <div class="col glass" style="text-align:center"><span style="font-size:13px;color:var(--muted)">Global Offices</span><p style="font-size:18px;font-weight:700;color:var(--white)">Australia, India, Indonesia, Vietnam</p></div>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div class="col glass" style="text-align:center"><span style="font-size:13px;color:var(--muted)">Industry</span><p style="font-size:18px;font-weight:700;color:var(--white)">Advertising Technology (AdTech)</p></div>
+      <div class="col glass" style="text-align:center"><span style="font-size:13px;color:var(--muted)">Key Clients</span><p style="font-size:18px;font-weight:700;color:var(--white)">WPP Media, Vodafone, KPMG</p></div>
+      <div class="col glass" style="text-align:center"><span style="font-size:13px;color:var(--muted)">India Entity</span><p style="font-size:18px;font-weight:700;color:var(--white)">Infomo Digital Media Pvt. Ltd.</p></div>
+    </div>
+    <div class="glass" style="margin-top:10px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:var(--muted)"><span style="color:var(--teal);font-weight:600">Merger:</span> In November 2021, Infomo merged with TorcAI — combining telco data capabilities with AI-powered advertising optimization.</p>
+    </div>
+    <div class="slide-num">05 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 6: LEADERSHIP ==================== -->
+<section class="slide" data-slide="5">
+  <div class="bg-teal-glow" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part II — Company Overview</span></div>
+    <h2 class="headline-sm">Leadership <span class="headline-teal">Team</span></h2>
+    <div class="hline"></div>
+    <div class="row" style="margin-top:12px">
+      <div class="col glass glass-teal" style="flex:1">
+        <span style="font-size:13px;color:var(--teal);font-weight:600">Dr. Ananda Rao</span>
+        <p style="font-size:12px;color:var(--muted);margin-top:4px">Managing Director &amp; Group CEO, Infomo Global</p>
+        <p style="font-size:11px;color:var(--dim);margin-top:2px">35+ years experience in SE Asian markets including Australia &amp; New Zealand</p>
+      </div>
+      <div class="col glass" style="flex:1">
+        <span style="font-size:13px;color:var(--blue);font-weight:600">Animesh Kumar</span>
+        <p style="font-size:12px;color:var(--muted);margin-top:4px">CEO – India, Infomo Digital Media</p>
+        <p style="font-size:11px;color:var(--dim);margin-top:2px">20+ years experience; former Head of Digital at WPP's Mindshare</p>
+      </div>
+      <div class="col glass" style="flex:1">
+        <span style="font-size:13px;color:var(--indigo);font-weight:600">Soumya Acharya</span>
+        <p style="font-size:12px;color:var(--muted);margin-top:4px">Chief Growth Officer (CGO), Infomo Digital</p>
+        <p style="font-size:11px;color:var(--dim);margin-top:2px">Leading growth strategy, strategic partnerships, and business expansion</p>
+      </div>
+    </div>
+    <div class="glass glass-teal" style="margin-top:10px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:rgba(255,255,255,0.85)"><span style="color:var(--teal);font-weight:600">India Leadership:</span> Animesh Kumar leads Infomo's next phase of growth across India and global markets, developing AI-powered, privacy-compliant advertising solutions.</p>
+    </div>
+    <div class="slide-num">06 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 7: PRODUCT SUITE ==================== -->
+<section class="slide" data-slide="6">
+  <div class="bg-navy" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part III — Product Suite</span></div>
+    <h2 class="headline-sm">End‑to‑End <span class="headline-teal">Technology Suite</span></h2>
+    <div class="hline"></div>
+    <p class="insight">Infomo has built an impressive, end‑to‑end technology suite that's already powering results for major brands and agencies across Asia.</p>
+    <div class="row" style="margin-top:12px">
+      <div class="col glass glass-teal" style="border-left:3px solid var(--teal)">
+        <span style="font-size:13px;color:var(--teal);font-weight:600">Beki (Meta-DSP)</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Meta-Demand Side Platform — enabling audience extension and expanded SME monetisation</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--blue)">
+        <span style="font-size:13px;color:var(--blue);font-weight:600">DSP</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Demand Side Platform — executing campaigns across Search, Social, and Programmatic channels</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--indigo)">
+        <span style="font-size:13px;color:var(--indigo);font-weight:600">CDP</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Customer Data Platform — unifying customer data for intelligent activation</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--cyan)">
+        <span style="font-size:13px;color:var(--cyan);font-weight:600">Data Clean Room</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Privacy-safe collaboration and consent governance</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--purple)">
+        <span style="font-size:13px;color:var(--purple);font-weight:600">ION Exchange</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Data monetization and exchange platform</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--teal)">
+        <span style="font-size:13px;color:var(--teal);font-weight:600">InfomoR3</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Sell-side adtech platform for publishers and telecom carriers</p>
+      </div>
+    </div>
+    <div class="slide-num">07 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 8: PLATFORM CAPABILITIES ==================== -->
+<section class="slide" data-slide="7">
+  <div class="bg-navy-glow" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part III — Product Suite</span></div>
+    <h2 class="headline-sm">Platform <span class="headline-teal">Capabilities</span></h2>
+    <div class="hline"></div>
+    <p class="insight">A composable stack for every layer — deploy only the capabilities you need, from intelligence and collaboration to activation, measurement, and monetization.</p>
+    <div class="row" style="margin-top:10px">
+      <div class="col glass glass-teal" style="flex:1">
+        <span style="font-size:12px;color:var(--teal);font-weight:600">Data Spine</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:2px">Persistent layer connecting data across the digital ecosystem</p>
+      </div>
+      <div class="col glass" style="flex:1">
+        <span style="font-size:12px;color:var(--blue);font-weight:600">Agentic Orchestration</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:2px">AI agents automating planning, decisioning, and execution</p>
+      </div>
+      <div class="col glass" style="flex:1">
+        <span style="font-size:12px;color:var(--indigo);font-weight:600">Workflow Automation</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:2px">Streamlining business and marketing processes</p>
+      </div>
+      <div class="col glass" style="flex:1">
+        <span style="font-size:12px;color:var(--cyan);font-weight:600">Cross-Platform Activation</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:2px">Search, social, programmatic, retail media</p>
+      </div>
+      <div class="col glass" style="flex:1">
+        <span style="font-size:12px;color:var(--purple);font-weight:600">Unified Measurement</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:2px">Attribution, analytics, performance intelligence</p>
+      </div>
+      <div class="col glass" style="flex:1">
+        <span style="font-size:12px;color:var(--teal);font-weight:600">AI-Enabled Optimization</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:2px">Continuous optimization of audiences and campaigns</p>
+      </div>
+    </div>
+    <div class="slide-num">08 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 9: TELCO DATA ADVANTAGE ==================== -->
+<section class="slide" data-slide="8">
+  <div class="bg-gradient-accent" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part III — Product Suite</span></div>
+    <h2 class="headline-sm">The <span class="headline-teal">Telco Data</span> Advantage</h2>
+    <div class="hline"></div>
+    <p class="insight">Infomo's ecosystem is driven by the richness of telco data — enabling telecom carriers to compete with Google and Meta using privacy-compliant, first-party data.</p>
+    <div class="row" style="margin-top:12px">
+      <div class="col glass glass-teal" style="text-align:center;flex:1">
+        <span style="font-size:28px;font-weight:800;color:var(--teal)">Telco ID</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Privacy-compliant identity layer</p>
+      </div>
+      <div class="col glass" style="text-align:center;flex:1">
+        <span style="font-size:28px;font-weight:800;color:var(--blue)">First-Party Data</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Rich, consented customer insights</p>
+      </div>
+      <div class="col glass" style="text-align:center;flex:1">
+        <span style="font-size:28px;font-weight:800;color:var(--indigo)">AI-Powered</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Advanced advertising optimization</p>
+      </div>
+      <div class="col glass" style="text-align:center;flex:1">
+        <span style="font-size:28px;font-weight:800;color:var(--cyan)">Privacy by Design</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Sovereign, compliant activation</p>
+      </div>
+    </div>
+    <div class="glass glass-teal" style="margin-top:10px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:rgba(255,255,255,0.85)"><span style="color:var(--teal);font-weight:600">The Infomo Edge:</span> "Telcos can compete with Google &amp; Meta with first-party data" — Infomo enables telecom carriers to monetize their data assets in a cookieless world.</p>
+    </div>
+    <div class="slide-num">09 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 10: STRATEGIC PARTNERSHIPS ==================== -->
+<section class="slide" data-slide="9">
+  <div class="bg-navy" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part IV — Strategic Partnerships</span></div>
+    <h2 class="headline-sm">Global <span class="headline-teal">Partnerships</span></h2>
+    <div class="hline"></div>
+    <div class="row" style="margin-top:12px">
+      <div class="col glass glass-teal" style="border-left:3px solid var(--teal)">
+        <span style="font-size:13px;color:var(--teal);font-weight:600">KPMG in India</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Global alliance to develop digital advertising solutions for enterprises and large publishers utilizing InfomoR3.</p>
+        <p style="font-size:11px;color:var(--dim);margin-top:2px">Targeting the USD 340 billion digital marketing industry</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--blue)">
+        <span style="font-size:13px;color:var(--blue);font-weight:600">Adslot</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Mutual Reseller Agreement across Australia, New Zealand, and India — integrating Adslot Publisher with Infomo's Meta-DSP "Beki".</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--indigo)">
+        <span style="font-size:13px;color:var(--indigo);font-weight:600">Indosat</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Collaboration to develop an AI/ML advertising platform — leveraging Infomo's Data Monetization Platform and DSP technology.</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--cyan)">
+        <span style="font-size:13px;color:var(--cyan);font-weight:600">Vodafone Idea</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Multiyear partnership for the launch of Vi ads through subsidiary TorcAI.</p>
+      </div>
+    </div>
+    <div class="glass glass-teal" style="margin-top:10px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:rgba(255,255,255,0.85)"><span style="color:var(--teal);font-weight:600">Ecosystem Approach:</span> Infomo is emerging as a major player and key disruptor in the rapidly expanding digital marketing, advertising, and data monetisation marketplace.</p>
+    </div>
+    <div class="slide-num">10 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 11: KPMG PARTNERSHIP DEEP-DIVE ==================== -->
+<section class="slide" data-slide="10">
+  <div class="bg-teal-glow" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part IV — Strategic Partnerships</span></div>
+    <h2 class="headline-sm">KPMG in India — <span class="headline-teal">Global Alliance</span></h2>
+    <div class="hline"></div>
+    <p class="insight">A strategic alliance to develop digital advertising solutions for enterprises and large publishers — putting control back in the hands of sell-side stakeholders.</p>
+    <div class="row" style="margin-top:12px">
+      <div class="col glass glass-teal" style="flex:1;border-left:3px solid var(--teal)">
+        <span style="font-size:12px;color:var(--teal);font-weight:600">The Solution</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">InfomoR3 — a sell-side adtech platform that enables large publishers, enterprises, and telecom carriers to offer advertisers customisable digital marketing services.</p>
+      </div>
+      <div class="col glass" style="flex:1;border-left:3px solid var(--blue)">
+        <span style="font-size:12px;color:var(--blue);font-weight:600">The Opportunity</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Targeting the USD 340 billion digital marketing industry — generating direct revenues for telecom carriers and large publishers.</p>
+      </div>
+      <div class="col glass" style="flex:1;border-left:3px solid var(--indigo)">
+        <span style="font-size:12px;color:var(--indigo);font-weight:600">The Impact</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">A straightforward ongoing option for advertisers and agencies — moving all-out control back to the sell-side stakeholders.</p>
+      </div>
+    </div>
+    <div class="glass" style="margin-top:10px;border-left:3px solid var(--cyan)">
+      <p style="font-size:12px;color:var(--muted)"><span style="color:var(--cyan);font-weight:600">Announcement:</span> "KPMG in India and Infomo today announced its alliance to develop digital advertising solutions for enterprises and large publishers utilising the InfomoR3."</p>
+    </div>
+    <div class="slide-num">11 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 12: COMPETITIVE LANDSCAPE ==================== -->
+<section class="slide" data-slide="11">
+  <div class="bg-navy" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part V — Competitive Intelligence</span></div>
+    <h2 class="headline-sm">Competitive <span class="headline-teal">Landscape</span></h2>
+    <div class="hline"></div>
+    <p class="insight">Infomo operates in the rapidly evolving AdTech ecosystem — competing with established players while carving out a unique niche powered by telco data.</p>
+    <div class="row" style="margin-top:12px">
+      <div class="col-full glass glass-teal" style="border-left:3px solid var(--teal)">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:12px">
+          <div><span style="color:var(--dim)">Player</span></div>
+          <div><span style="color:var(--dim)">Focus Area</span></div>
+          <div><span style="color:var(--dim)">Differentiator</span></div>
+          <div><span style="color:var(--dim)">Infomo Advantage</span></div>
+          <div style="border-top:1px solid var(--border);padding-top:4px;font-weight:600;color:var(--teal)">Infomo</div>
+          <div style="border-top:1px solid var(--border);padding-top:4px;color:var(--white)">Telco Data + AI</div>
+          <div style="border-top:1px solid var(--border);padding-top:4px;color:var(--teal)">Privacy-first, sovereign</div>
+          <div style="border-top:1px solid var(--border);padding-top:4px;color:var(--cyan)">—</div>
+          <div style="padding-top:4px;color:var(--white)">Google / Meta</div>
+          <div style="padding-top:4px;color:var(--white)">Walled Gardens</div>
+          <div style="padding-top:4px;color:var(--white)">Massive scale</div>
+          <div style="padding-top:4px;color:var(--teal)">Telco data advantage</div>
+          <div style="padding-top:4px;color:var(--white)">The Trade Desk</div>
+          <div style="padding-top:4px;color:var(--white)">Independent DSP</div>
+          <div style="padding-top:4px;color:var(--white)">Programmatic leader</div>
+          <div style="padding-top:4px;color:var(--teal)">Sovereign infrastructure</div>
+          <div style="padding-top:4px;color:var(--white)">Adobe / Salesforce</div>
+          <div style="padding-top:4px;color:var(--white)">CDP / Marketing Cloud</div>
+          <div style="padding-top:4px;color:var(--white)">Enterprise suite</div>
+          <div style="padding-top:4px;color:var(--teal)">Composable, AI-native</div>
+        </div>
+      </div>
+    </div>
+    <div class="glass" style="margin-top:10px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:var(--muted)"><span style="color:var(--teal);font-weight:600">Key Differentiator:</span> Infomo's privacy-compliant, telco-based platform is poised to emerge as a great digital advertising platform in the cookieless world.</p>
+    </div>
+    <div class="slide-num">12 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 13: SWOT ==================== -->
+<section class="slide" data-slide="12">
+  <div class="bg-navy-glow" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part V — Competitive Intelligence</span></div>
+    <h2 class="headline-sm">SWOT <span class="headline-teal">Analysis</span></h2>
+    <div class="hline"></div>
+    <div class="row" style="margin-top:10px">
+      <div class="col glass glass-teal" style="flex:1;border-top:3px solid var(--teal)">
+        <span style="font-size:13px;color:var(--teal);font-weight:600">Strengths</span>
+        <ul style="font-size:11px;color:var(--muted);margin-top:6px;list-style:none;padding-left:0">
+          <li style="padding:3px 0">✓ Telco data advantage — privacy-compliant, first-party</li>
+          <li style="padding:3px 0">✓ AI-native, composable architecture</li>
+          <li style="padding:3px 0">✓ End-to-end technology suite (DSP, CDP, DCR)</li>
+          <li style="padding:3px 0">✓ Strategic partnerships (KPMG, Adslot, Indosat)</li>
+          <li style="padding:3px 0">✓ Sovereign, privacy-by-design infrastructure</li>
+        </ul>
+      </div>
+      <div class="col glass" style="flex:1;border-top:3px solid #ff6b6b">
+        <span style="font-size:13px;color:#ff6b6b;font-weight:600">Weaknesses</span>
+        <ul style="font-size:11px;color:var(--muted);margin-top:6px;list-style:none;padding-left:0">
+          <li style="padding:3px 0">✗ Smaller scale vs Google/Meta</li>
+          <li style="padding:3px 0">✗ Limited brand awareness</li>
+          <li style="padding:3px 0">✗ Revenue < $6M — early-stage growth</li>
+          <li style="padding:3px 0">✗ Dependency on telco partnerships</li>
+          <li style="padding:3px 0">✗ Limited global footprint</li>
+        </ul>
+      </div>
+      <div class="col glass" style="flex:1;border-top:3px solid var(--cyan)">
+        <span style="font-size:13px;color:var(--cyan);font-weight:600">Opportunities</span>
+        <ul style="font-size:11px;color:var(--muted);margin-top:6px;list-style:none;padding-left:0">
+          <li style="padding:3px 0">○ Cookieless future — privacy-first is an advantage</li>
+          <li style="padding:3px 0">○ Telco data monetization market growth</li>
+          <li style="padding:3px 0">○ India's digital advertising boom</li>
+          <li style="padding:3px 0">○ Expansion of AI/ML capabilities</li>
+          <li style="padding:3px 0">○ New geographic markets</li>
+        </ul>
+      </div>
+      <div class="col glass" style="flex:1;border-top:3px solid #ff6b6b">
+        <span style="font-size:13px;color:#ff6b6b;font-weight:600">Threats</span>
+        <ul style="font-size:11px;color:var(--muted);margin-top:6px;list-style:none;padding-left:0">
+          <li style="padding:3px 0">✗ Regulatory changes in data privacy</li>
+          <li style="padding:3px 0">✗ Competition from global AdTech giants</li>
+          <li style="padding:3px 0">✗ Telco data access restrictions</li>
+          <li style="padding:3px 0">✗ Technology disruption</li>
+          <li style="padding:3px 0">✗ Economic downturn affecting ad spend</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-num">13 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 14: MARKET OPPORTUNITY ==================== -->
+<section class="slide" data-slide="13">
+  <div class="bg-gradient-accent" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part V — Competitive Intelligence</span></div>
+    <h2 class="headline-sm">Market <span class="headline-teal">Opportunity</span></h2>
+    <div class="hline"></div>
+    <p class="insight">The digital advertising market is undergoing a seismic shift — and Infomo is positioned at the intersection of the biggest trends.</p>
+    <div class="row" style="margin-top:12px">
+      <div class="col glass glass-teal" style="text-align:center;flex:1">
+        <span class="stat-big" style="font-size:clamp(28px,5vw,40px)"><span class="stat-teal">$340B</span></span>
+        <p class="stat-label">Global Digital Marketing Industry</p>
+      </div>
+      <div class="col glass" style="text-align:center;flex:1">
+        <span class="stat-big" style="font-size:clamp(28px,5vw,40px)"><span class="stat-cyan">Cookieless</span></span>
+        <p class="stat-label">The privacy-first future is now</p>
+      </div>
+      <div class="col glass" style="text-align:center;flex:1">
+        <span class="stat-big" style="font-size:clamp(28px,5vw,40px)"><span class="stat-teal">Telco Data</span></span>
+        <p class="stat-label">The new oil of digital advertising</p>
+      </div>
+      <div class="col glass" style="text-align:center;flex:1">
+        <span class="stat-big" style="font-size:clamp(28px,5vw,40px)"><span class="stat-cyan">AI-Native</span></span>
+        <p class="stat-label">The next generation of AdTech</p>
+      </div>
+    </div>
+    <div class="glass glass-teal" style="margin-top:10px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:rgba(255,255,255,0.85)"><span style="color:var(--teal);font-weight:600">The Infomo Position:</span> As the world moves toward a cookieless future, Infomo's privacy-compliant, telco-based platform is poised to emerge as a great digital advertising platform.</p>
+    </div>
+    <div class="slide-num">14 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 15: INDIA FOCUS ==================== -->
+<section class="slide" data-slide="14">
+  <div class="bg-navy" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part VI — India Operations</span></div>
+    <h2 class="headline-sm">India <span class="headline-teal">Focus</span></h2>
+    <div class="hline"></div>
+    <p class="insight">Infomo Digital Media Private Limited — established in 2017, headquartered in Mumbai, driving the company's next phase of growth across India and global markets.</p>
+    <div class="row" style="margin-top:12px">
+      <div class="col glass glass-teal" style="flex:1">
+        <span style="font-size:13px;color:var(--teal);font-weight:600">Incorporation</span>
+        <p style="font-size:12px;color:var(--white);margin-top:4px">July 5, 2017 — ROC Mumbai</p>
+        <p style="font-size:11px;color:var(--dim);margin-top:2px">CIN: U74999MH2017PTC296978</p>
+      </div>
+      <div class="col glass" style="flex:1">
+        <span style="font-size:13px;color:var(--blue);font-weight:600">Location</span>
+        <p style="font-size:12px;color:var(--white);margin-top:4px">Wework Enam Sambhav, BKC, Mumbai</p>
+        <p style="font-size:11px;color:var(--dim);margin-top:2px">Bandra Kurla Complex — India's media &amp; finance hub</p>
+      </div>
+      <div class="col glass" style="flex:1">
+        <span style="font-size:13px;color:var(--indigo);font-weight:600">Leadership</span>
+        <p style="font-size:12px;color:var(--white);margin-top:4px">Animesh Kumar — CEO, India</p>
+        <p style="font-size:11px;color:var(--dim);margin-top:2px">Soumya Acharya — Chief Growth Officer</p>
+      </div>
+      <div class="col glass" style="flex:1">
+        <span style="font-size:13px;color:var(--cyan);font-weight:600">Directors</span>
+        <p style="font-size:12px;color:var(--white);margin-top:4px">Smita Sahu, Raghavendra Agarwala</p>
+        <p style="font-size:11px;color:var(--dim);margin-top:2px">Rohit Verma — longest-serving director</p>
+      </div>
+    </div>
+    <div class="glass glass-teal" style="margin-top:10px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:rgba(255,255,255,0.85)"><span style="color:var(--teal);font-weight:600">India Growth Story:</span> Animesh Kumar will lead Infomo's next phase of growth and innovation across India and other global markets.</p>
+    </div>
+    <div class="slide-num">15 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 16: TECHNOLOGY DIFFERENTIATORS ==================== -->
+<section class="slide" data-slide="15">
+  <div class="bg-teal-glow" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part VI — India Operations</span></div>
+    <h2 class="headline-sm">Technology <span class="headline-teal">Differentiators</span></h2>
+    <div class="hline"></div>
+    <p class="insight">What makes Infomo's infrastructure uniquely positioned for the future of advertising.</p>
+    <div class="row" style="margin-top:12px">
+      <div class="col glass glass-teal" style="border-left:3px solid var(--teal)">
+        <span style="font-size:13px;color:var(--teal);font-weight:600">Built for Sovereignty</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Maintain control of data, identity, governance, and compliance while enabling activation across external ecosystems.</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--blue)">
+        <span style="font-size:13px;color:var(--blue);font-weight:600">Privacy by Design</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Support privacy-safe collaboration, consent governance, and enterprise-grade security frameworks.</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--indigo)">
+        <span style="font-size:13px;color:var(--indigo);font-weight:600">Composable Architecture</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Deploy only the capabilities you need — from CDP and DCR to activation, measurement, and monetization.</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--cyan)">
+        <span style="font-size:13px;color:var(--cyan);font-weight:600">AI-Native Infrastructure</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Leverage autonomous decisioning, optimization, and orchestration across the entire customer and advertising lifecycle.</p>
+      </div>
+    </div>
+    <div class="glass" style="margin-top:10px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:var(--muted)"><span style="color:var(--teal);font-weight:600">Data Governance:</span> Infomo maintains rigorous data security and privacy standards, supported by robust data governance and enterprise-grade information security frameworks.</p>
+    </div>
+    <div class="slide-num">16 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 17: OUTCOMES AT SCALE ==================== -->
+<section class="slide" data-slide="16">
+  <div class="bg-navy" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part VII — Outcomes</span></div>
+    <h2 class="headline-sm">Outcomes at <span class="headline-teal">Scale</span></h2>
+    <div class="hline"></div>
+    <p class="insight">Results that move the business — Infomo's infrastructure delivers measurable impact across the entire advertising lifecycle.</p>
+    <div class="row" style="margin-top:12px">
+      <div class="col glass glass-teal" style="text-align:center;flex:1">
+        <span style="font-size:28px;font-weight:800;color:var(--teal)">Higher Revenue</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Unlock new monetization opportunities across audiences and inventory</p>
+      </div>
+      <div class="col glass" style="text-align:center;flex:1">
+        <span style="font-size:28px;font-weight:800;color:var(--blue)">Better Performance</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Improve campaign efficiency, targeting precision, and ROI</p>
+      </div>
+      <div class="col glass" style="text-align:center;flex:1">
+        <span style="font-size:28px;font-weight:800;color:var(--indigo)">Unified Measurement</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Connect activation, attribution, and business outcomes</p>
+      </div>
+      <div class="col glass" style="text-align:center;flex:1">
+        <span style="font-size:28px;font-weight:800;color:var(--cyan)">Sustainable Growth</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Build long-term competitive advantage through data spine</p>
+      </div>
+    </div>
+    <div class="glass glass-teal" style="margin-top:10px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:rgba(255,255,255,0.85)"><span style="color:var(--teal);font-weight:600">Trusted Infrastructure:</span> "Engineered for scale — Infomo maintains rigorous data security and privacy standards, supported by robust data governance and enterprise-grade information security frameworks."</p>
+    </div>
+    <div class="slide-num">17 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 18: CLIENT ECOSYSTEM ==================== -->
+<section class="slide" data-slide="17">
+  <div class="bg-navy-glow" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part VII — Outcomes</span></div>
+    <h2 class="headline-sm">Client <span class="headline-teal">Ecosystem</span></h2>
+    <div class="hline"></div>
+    <p class="insight">Infomo serves the full spectrum of the digital advertising value chain — from media buyers to data providers.</p>
+    <div class="row" style="margin-top:12px">
+      <div class="col glass glass-teal" style="flex:1;border-left:3px solid var(--teal)">
+        <span style="font-size:13px;color:var(--teal);font-weight:600">Media Buyers</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Agencies, brands, and SMEs — executing campaigns across Search, Social, and Programmatic channels</p>
+      </div>
+      <div class="col glass" style="flex:1;border-left:3px solid var(--blue)">
+        <span style="font-size:13px;color:var(--blue);font-weight:600">Media Sellers</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Various types of publishers — monetizing their inventory</p>
+      </div>
+      <div class="col glass" style="flex:1;border-left:3px solid var(--indigo)">
+        <span style="font-size:13px;color:var(--indigo);font-weight:600">Data Providers</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Telecom carriers — unlocking the power of telco data insights</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;justify-content:center">
+      <span class="pill pill-teal">WPP Media</span>
+      <span class="pill pill-teal">Vodafone</span>
+      <span class="pill pill-indigo">KPMG</span>
+      <span class="pill pill-cyan">Indosat</span>
+      <span class="pill pill-teal">Adslot</span>
+      <span class="pill pill-teal">Vodafone Idea</span>
+    </div>
+    <div class="glass" style="margin-top:10px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:var(--muted)"><span style="color:var(--teal);font-weight:600">Global Reach:</span> Infomo's solutions are already powering results for major brands and agencies like WPP Media and Vodafone across Asia.</p>
+    </div>
+    <div class="slide-num">18 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 19: MARKETING INTELLIGENCE ==================== -->
+<section class="slide" data-slide="18">
+  <div class="bg-navy" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part VIII — Marketing &amp; Execution</span></div>
+    <h2 class="headline-sm">Marketing <span class="headline-teal">Intelligence</span></h2>
+    <div class="hline"></div>
+    <p class="insight">Infomo's go-to-market strategy focuses on three core pillars — each designed to build trust, demonstrate value, and drive adoption.</p>
+    <div class="row" style="margin-top:12px">
+      <div class="col glass glass-teal" style="border-left:3px solid var(--teal)">
+        <span style="font-size:13px;color:var(--teal);font-weight:600">Thought Leadership</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Positioning Infomo as the authority on telco data monetization and privacy-first advertising — through speaking engagements, whitepapers, and media interviews.</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--blue)">
+        <span style="font-size:13px;color:var(--blue);font-weight:600">Strategic Partnerships</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Leveraging alliances with KPMG, Adslot, and telco partners to access new markets and build credibility.</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--indigo)">
+        <span style="font-size:13px;color:var(--indigo);font-weight:600">Product-Led Growth</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Demonstrating the power of the platform through measurable outcomes — higher revenue, better performance, unified measurement.</p>
+      </div>
+    </div>
+    <div class="glass glass-teal" style="margin-top:10px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:rgba(255,255,255,0.85)"><span style="color:var(--teal);font-weight:600">The Infomo Narrative:</span> "Connect Intelligence. Orchestrate Advertising. Deliver Outcomes." — every campaign must demonstrate how Infomo transforms data into measurable business outcomes.</p>
+    </div>
+    <div class="slide-num">19 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 20: STRATEGIC ROADMAP ==================== -->
+<section class="slide" data-slide="19">
+  <div class="bg-gradient-accent" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Part VIII — Marketing &amp; Execution</span></div>
+    <h2 class="headline-sm">Strategic Roadmap <span class="headline-teal">2026–2027</span></h2>
+    <div class="hline"></div>
+    <div class="row" style="margin-top:10px">
+      <div class="col glass glass-teal" style="border-left:3px solid var(--teal);flex:1">
+        <span style="font-size:12px;color:var(--teal);font-weight:600">Q1 · Foundation &amp; Scale</span>
+        <ul style="font-size:11px;color:var(--muted);margin-top:4px;list-style:none;padding-left:0">
+          <li style="padding:2px 0">• Expand India leadership team (CGO appointed)</li>
+          <li style="padding:2px 0">• Deepen Adslot partnership integration</li>
+          <li style="padding:2px 0">• Scale Beki (Meta-DSP) adoption</li>
+          <li style="padding:2px 0">• Strengthen telco partnerships</li>
+        </ul>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--blue);flex:1">
+        <span style="font-size:12px;color:var(--blue);font-weight:600">Q2 · Product &amp; Innovation</span>
+        <ul style="font-size:11px;color:var(--muted);margin-top:4px;list-style:none;padding-left:0">
+          <li style="padding:2px 0">• Full JAMS (AI Media Studio) rollout</li>
+          <li style="padding:2px 0">• Data Clean Room expansion</li>
+          <li style="padding:2px 0">• AI-native optimization enhancements</li>
+          <li style="padding:2px 0">• Cross-platform activation upgrades</li>
+        </ul>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--indigo);flex:1">
+        <span style="font-size:12px;color:var(--indigo);font-weight:600">Q3–Q4 · Scale &amp; Global Expansion</span>
+        <ul style="font-size:11px;color:var(--muted);margin-top:4px;list-style:none;padding-left:0">
+          <li style="padding:2px 0">• New geographic market entry</li>
+          <li style="padding:2px 0">• Enhanced sovereign deployments</li>
+          <li style="padding:2px 0">• Enterprise-grade security frameworks</li>
+          <li style="padding:2px 0">• Revenue growth acceleration</li>
+        </ul>
+      </div>
+    </div>
+    <div class="glass glass-teal" style="margin-top:10px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:rgba(255,255,255,0.85)"><span style="color:var(--teal);font-weight:600">North Star:</span> Establish Infomo as the leading intelligence and orchestration layer for the digital advertising ecosystem — powering outcomes for the world's largest brands, agencies, and telecom carriers.</p>
+    </div>
+    <div class="slide-num">20 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 21: CLOSING ==================== -->
+<section class="slide" data-slide="20">
+  <div class="bg-gradient" style="position:absolute;inset:0"></div>
+  <div class="data-spine"><div class="spine-line"></div><div class="spine-line"></div><div class="spine-line"></div></div>
+  <div class="slide-inner slide-inner-center" style="display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:80vh">
+    <div style="width:80px;height:2px;background:var(--teal);margin:0 auto 30px;box-shadow:0 0 20px var(--teal-glow)"></div>
+    <h2 class="headline" style="font-size:clamp(24px,5vw,44px);max-width:700px;margin:0 auto">The <span class="headline-teal">Intelligence</span> Layer for the Digital Advertising Economy</h2>
+    <div style="width:50px;height:2px;background:var(--teal);margin:24px auto;box-shadow:0 0 15px var(--teal-glow)"></div>
+    <p class="sub" style="max-width:600px;margin:0 auto;text-align:center">In a cookieless world, Infomo's privacy-first, telco-powered infrastructure is the key to unlocking the next generation of digital advertising — connecting intelligence, orchestrating advertising, and delivering outcomes at scale.</p>
+    <div style="margin-top:28px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center">
+      <span class="pill pill-teal"><span class="pill-dot"></span>Data Spine</span>
+      <span class="pill pill-teal"><span class="pill-dot"></span>Agentic AI</span>
+      <span class="pill pill-indigo"><span class="pill-dot" style="background:var(--indigo)"></span>Privacy by Design</span>
+      <span class="pill pill-cyan"><span class="pill-dot" style="background:var(--cyan)"></span>Telco Data</span>
+      <span class="pill pill-teal"><span class="pill-dot"></span>Measurable Outcomes</span>
+    </div>
+    <div class="slide-num">21 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 22: QUICK FACTS ==================== -->
+<section class="slide" data-slide="21">
+  <div class="bg-navy" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Quick Reference</span></div>
+    <h2 class="headline-sm">Infomo <span class="headline-teal">Fact Sheet</span></h2>
+    <div class="hline"></div>
+    <div class="row" style="margin-top:10px">
+      <div class="col glass glass-teal" style="flex:1"><span style="font-size:12px;color:var(--teal);font-weight:600">Founded</span><p style="font-size:13px;color:var(--white);margin-top:4px">2017</p></div>
+      <div class="col glass" style="flex:1"><span style="font-size:12px;color:var(--blue);font-weight:600">Headquarters</span><p style="font-size:13px;color:var(--white);margin-top:4px">Singapore</p></div>
+      <div class="col glass" style="flex:1"><span style="font-size:12px;color:var(--indigo);font-weight:600">Global Offices</span><p style="font-size:13px;color:var(--white);margin-top:4px">Australia, India, Indonesia, Vietnam</p></div>
+      <div class="col glass" style="flex:1"><span style="font-size:12px;color:var(--cyan);font-weight:600">Key Clients</span><p style="font-size:13px;color:var(--white);margin-top:4px">WPP Media, Vodafone, KPMG</p></div>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div class="col glass" style="flex:1"><span style="font-size:12px;color:var(--teal);font-weight:600">Products</span><p style="font-size:13px;color:var(--white);margin-top:4px">Beki (Meta-DSP), DSP, CDP, DCR, ION Exchange</p></div>
+      <div class="col glass" style="flex:1"><span style="font-size:12px;color:var(--blue);font-weight:600">India Entity</span><p style="font-size:13px;color:var(--white);margin-top:4px">Infomo Digital Media Pvt. Ltd.</p></div>
+      <div class="col glass" style="flex:1"><span style="font-size:12px;color:var(--indigo);font-weight:600">CEO, India</span><p style="font-size:13px;color:var(--white);margin-top:4px">Animesh Kumar</p></div>
+      <div class="col glass" style="flex:1"><span style="font-size:12px;color:var(--cyan);font-weight:600">Revenue</span><p style="font-size:13px;color:var(--white);margin-top:4px">$5.9M (estimated)</p></div>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div class="col glass" style="flex:1"><span style="font-size:12px;color:var(--teal);font-weight:600">Merger</span><p style="font-size:13px;color:var(--white);margin-top:4px">TorcAI (Nov 2021)</p></div>
+      <div class="col glass" style="flex:1"><span style="font-size:12px;color:var(--blue);font-weight:600">Partners</span><p style="font-size:13px;color:var(--white);margin-top:4px">KPMG, Adslot, Indosat, Vodafone Idea</p></div>
+      <div class="col glass" style="flex:1"><span style="font-size:12px;color:var(--indigo);font-weight:600">Differentiator</span><p style="font-size:13px;color:var(--white);margin-top:4px">Telco Data + AI-Native Infrastructure</p></div>
+      <div class="col glass" style="flex:1"><span style="font-size:12px;color:var(--cyan);font-weight:600">Tagline</span><p style="font-size:13px;color:var(--white);margin-top:4px">Connect Intelligence. Orchestrate Advertising. Deliver Outcomes.</p></div>
+    </div>
+    <div class="slide-num">22 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 23-28: BONUS SLIDES ==================== -->
+<!-- SLIDE 23: The Cookieless Future -->
+<section class="slide" data-slide="22">
+  <div class="bg-teal-glow" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-center">
+    <div class="act-tag" style="justify-content:center"><span>Bonus</span></div>
+    <h2 class="headline-sm">The <span class="headline-teal">Cookieless</span> Future</h2>
+    <div class="hline hline-center"></div>
+    <p class="sub" style="max-width:600px;margin:0 auto;text-align:center">As third-party cookies fade, Infomo's privacy-compliant, telco-based platform is poised to emerge as the great digital advertising platform of the future.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:20px">
+      <div class="glass glass-teal" style="text-align:center;flex:1;min-width:160px;padding:20px">
+        <span style="font-size:24px;font-weight:800;color:var(--teal)">Privacy-First</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Consent-based, sovereign data</p>
+      </div>
+      <div class="glass" style="text-align:center;flex:1;min-width:160px;padding:20px">
+        <span style="font-size:24px;font-weight:800;color:var(--blue)">Telco Data</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Rich, first-party customer insights</p>
+      </div>
+      <div class="glass" style="text-align:center;flex:1;min-width:160px;padding:20px">
+        <span style="font-size:24px;font-weight:800;color:var(--indigo)">AI-Powered</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Intelligent optimization at scale</p>
+      </div>
+      <div class="glass" style="text-align:center;flex:1;min-width:160px;padding:20px">
+        <span style="font-size:24px;font-weight:800;color:var(--cyan)">Sovereign</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Complete control and compliance</p>
+      </div>
+    </div>
+    <div class="slide-num">23 / 28</div>
+  </div>
+</section>
+
+<!-- SLIDE 24: The Infomo Advantage -->
+<section class="slide" data-slide="23">
+  <div class="bg-navy" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-center">
+    <div class="act-tag" style="justify-content:center"><span>Bonus</span></div>
+    <h2 class="headline-sm">The <span class="headline-teal">Infomo</span> Advantage</h2>
+    <div class="hline hline-center"></div>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:16px">
+      <div class="glass glass-teal" style="flex:1;min-width:200px;text-align:center;padding:20px">
+        <span style="font-size:28px;font-weight:800;color:var(--teal)">Sovereign</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Infrastructure you control — maintain data, identity, and governance</p>
+      </div>
+      <div class="glass" style="flex:1;min-width:200px;text-align:center;padding:20px">
+        <span style="font-size:28px;font-weight:800;color:var(--blue)">Private</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Privacy-safe collaboration and enterprise-grade security</p>
+      </div>
+      <div class="glass" style="flex:1;min-width:200px;text-align:center;padding:20px">
+        <span style="font-size:28px;font-weight:800;color:var(--indigo)">Composable</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Deploy only the capabilities you need</p>
+      </div>
+      <div class="glass" style="flex:1;min-width:200px;text-align:center;padding:20px">
+        <span style="font-size:28px;font-weight:800;color:var(--cyan)">AI-Native</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Autonomous decisioning and optimization</p>
+      </div>
+    </div>
+    <div class="slide-num">24 / 28</div>
+  </div>
+</section>
+
+<!-- SLIDE 25: Key Milestones -->
+<section class="slide" data-slide="24">
+  <div class="bg-navy-glow" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-left">
+    <div class="act-tag"><span>Bonus</span></div>
+    <h2 class="headline-sm">Key <span class="headline-teal">Milestones</span></h2>
+    <div class="hline"></div>
+    <div class="row" style="margin-top:10px">
+      <div class="col glass glass-teal" style="border-left:3px solid var(--teal);flex:1">
+        <span style="font-size:12px;color:var(--teal);font-weight:600">2017</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:2px">Infomo founded in Melbourne</p>
+        <p style="font-size:11px;color:var(--dim);margin-top:2px">India entity incorporated (July 5)</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--blue);flex:1">
+        <span style="font-size:12px;color:var(--blue);font-weight:600">2021</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:2px">Merger with TorcAI</p>
+        <p style="font-size:11px;color:var(--dim);margin-top:2px">KPMG global alliance announced</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--indigo);flex:1">
+        <span style="font-size:12px;color:var(--indigo);font-weight:600">2023</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:2px">Indosat AI/ML platform collaboration</p>
+        <p style="font-size:11px;color:var(--dim);margin-top:2px">Telco data monetization thought leadership</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--cyan);flex:1">
+        <span style="font-size:12px;color:var(--cyan);font-weight:600">2025</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:2px">Animesh Kumar appointed CEO – India</p>
+        <p style="font-size:11px;color:var(--dim);margin-top:2px">Adslot partnership announced</p>
+      </div>
+      <div class="col glass" style="border-left:3px solid var(--teal);flex:1">
+        <span style="font-size:12px;color:var(--teal);font-weight:600">2026</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:2px">Soumya Acharya appointed CGO</p>
+        <p style="font-size:11px;color:var(--dim);margin-top:2px">Vodafone Idea partnership</p>
+        <p style="font-size:11px;color:var(--dim);margin-top:2px">Adslot integration with Beki</p>
+      </div>
+    </div>
+    <div class="slide-num">25 / 28</div>
+  </div>
+</section>
+
+<!-- SLIDE 26: Infomo vs The Giants -->
+<section class="slide" data-slide="25">
+  <div class="bg-navy" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-center">
+    <div class="act-tag" style="justify-content:center"><span>Bonus</span></div>
+    <h2 class="headline-sm">Infomo vs <span class="headline-teal">The Giants</span></h2>
+    <div class="hline hline-center"></div>
+    <p class="sub" style="max-width:600px;margin:0 auto;text-align:center">How Infomo's telco-powered, privacy-first infrastructure competes with the walled gardens.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:16px">
+      <div class="glass glass-teal" style="flex:1;min-width:180px;text-align:center;padding:20px">
+        <span style="font-size:13px;color:var(--teal);font-weight:600">Infomo</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Telco Data + AI-Native</p>
+        <p style="font-size:11px;color:var(--dim)">Privacy-First · Sovereign</p>
+      </div>
+      <div class="glass" style="flex:1;min-width:180px;text-align:center;padding:20px">
+        <span style="font-size:13px;color:var(--muted);font-weight:600">Google / Meta</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Walled Gardens</p>
+        <p style="font-size:11px;color:var(--dim)">Massive Scale · Third-Party Data</p>
+      </div>
+      <div class="glass" style="flex:1;min-width:180px;text-align:center;padding:20px">
+        <span style="font-size:13px;color:var(--muted);font-weight:600">The Trade Desk</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Independent DSP</p>
+        <p style="font-size:11px;color:var(--dim)">Programmatic Leader</p>
+      </div>
+      <div class="glass" style="flex:1;min-width:180px;text-align:center;padding:20px">
+        <span style="font-size:13px;color:var(--muted);font-weight:600">Adobe / Salesforce</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Enterprise CDP</p>
+        <p style="font-size:11px;color:var(--dim)">Marketing Cloud Suite</p>
+      </div>
+    </div>
+    <div class="glass glass-teal" style="margin-top:14px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:rgba(255,255,255,0.85)"><span style="color:var(--teal);font-weight:600">The Infomo Edge:</span> "Power of Google and Facebook is derived from their access to data. Infomo enables telecom carriers to compete with big players in digital marketing by designing its key modules to be housed inside the telecom carrier itself."</p>
+    </div>
+    <div class="slide-num">26 / 28</div>
+  </div>
+</section>
+
+<!-- SLIDE 27: Privacy by Design -->
+<section class="slide" data-slide="26">
+  <div class="bg-gradient-accent" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-center">
+    <div class="act-tag" style="justify-content:center"><span>Bonus</span></div>
+    <h2 class="headline-sm"><span class="headline-teal">Privacy</span> by Design</h2>
+    <div class="hline hline-center"></div>
+    <p class="sub" style="max-width:600px;margin:0 auto;text-align:center">Infomo's infrastructure is built with privacy and security at its core — enabling sovereign, compliant, and trusted data activation.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:16px">
+      <div class="glass glass-teal" style="flex:1;min-width:160px;text-align:center;padding:16px">
+        <span style="font-size:24px;font-weight:800;color:var(--teal)">🔒</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Data Governance</p>
+      </div>
+      <div class="glass" style="flex:1;min-width:160px;text-align:center;padding:16px">
+        <span style="font-size:24px;font-weight:800;color:var(--blue)">🛡️</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Enterprise Security</p>
+      </div>
+      <div class="glass" style="flex:1;min-width:160px;text-align:center;padding:16px">
+        <span style="font-size:24px;font-weight:800;color:var(--indigo)">⚖️</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Consent Governance</p>
+      </div>
+      <div class="glass" style="flex:1;min-width:160px;text-align:center;padding:16px">
+        <span style="font-size:24px;font-weight:800;color:var(--cyan)">🌐</span>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Sovereign Deployments</p>
+      </div>
+    </div>
+    <div class="glass" style="margin-top:14px;border-left:3px solid var(--teal)">
+      <p style="font-size:12px;color:var(--muted)"><span style="color:var(--teal);font-weight:600">Privacy-First by Design:</span> "Support privacy-safe collaboration, consent governance, and enterprise-grade security frameworks."</p>
+    </div>
+    <div class="slide-num">27 / 28</div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 28: CREDITS ==================== -->
+<section class="slide" data-slide="27">
+  <div class="bg-navy" style="position:absolute;inset:0"></div>
+  <div class="slide-inner slide-inner-center" style="display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:80vh">
+    <div style="width:80px;height:2px;background:var(--teal);margin:0 auto 30px;box-shadow:0 0 20px var(--teal-glow)"></div>
+    <div class="logo-wrapper" style="margin:0 auto 16px;">
+      <img src="https://www.infomo.com/frontend/images/logo-colour-1000x250.png" alt="Infomo Logo" style="height:45px;width:auto;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="logo-mark" style="display:none;"><span class="inf">Inf</span><span class="omo">omo</span></div>
+    </div>
+    <h2 class="headline" style="font-size:clamp(24px,5vw,40px);max-width:600px;margin:0 auto">Advertising &amp; Customer Intelligence <span class="headline-teal">Infrastructure</span></h2>
+    <p style="font-size:16px;color:var(--muted);margin-top:12px">Dossier 2026–2027</p>
+    <div style="margin-top:24px;width:60px;height:1px;background:var(--teal);box-shadow:0 0 15px var(--teal-glow)"></div>
+    <p style="font-size:13px;color:var(--dim);margin-top:16px;letter-spacing:1px">Assessment by <span style="color:var(--white);font-weight:600">Devansh Negi</span></p>
+    <p style="font-size:12px;color:var(--dim);margin-top:4px;letter-spacing:1px">Strategic Analysis · Competitive Intelligence · 2026–2027 Cycle</p>
+    <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+      <span class="pill pill-teal">AdTech</span>
+      <span class="pill pill-teal">Data Intelligence</span>
+      <span class="pill pill-indigo">AI-Native</span>
+      <span class="pill pill-cyan">Privacy by Design</span>
+      <span class="pill pill-teal">Telco Data</span>
+    </div>
+    <div class="slide-num">28 / 28</div>
+  </div>
+</section>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav-zone nav-left" id="nav-left" aria-label="Previous"></div>
+<div class="nav-zone nav-right" id="nav-right" aria-label="Next"></div>
+
+<!-- Controls -->
+<div id="controls"><div id="progress"><div id="progress-bar" style="width:3.57%"></div></div></div>
+<div id="counter">01 / 28</div>
+<div id="nav-hint" class="show">Tap sides or use arrow keys</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let current = 0;
+let isAnimating = false;
+const progressBar = document.getElementById('progress-bar');
+const counter = document.getElementById('counter');
+const navHint = document.getElementById('nav-hint');
+let hintTimeout;
+
+function goTo(n) {
+  if (isAnimating || n < 0 || n >= total || n === current) return;
+  isAnimating = true;
+  const prev = current;
+  slides[prev].classList.remove('active');
+  slides[prev].classList.add('leaving');
+  current = n;
+  slides[current].classList.add('active');
+  setTimeout(() => {
+    slides[prev].classList.remove('leaving');
+    isAnimating = false;
+  }, 500);
+  const pct = ((current + 1) / total * 100).toFixed(1);
+  progressBar.style.width = pct + '%';
+  counter.textContent = String(current + 1).padStart(2, '0') + ' / ' + total;
+  clearTimeout(hintTimeout);
+  navHint.classList.remove('show');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); goTo(current - 1); }
+  if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+  if (e.key === 'End') { e.preventDefault(); goTo(total - 1); }
+});
+
+document.getElementById('nav-left').addEventListener('click', () => goTo(current - 1));
+document.getElementById('nav-right').addEventListener('click', () => goTo(current + 1));
+
+let wheelTimeout;
+document.addEventListener('wheel', e => {
+  clearTimeout(wheelTimeout);
+  wheelTimeout = setTimeout(() => {
+    if (e.deltaY > 30) goTo(current + 1);
+    else if (e.deltaY < -30) goTo(current - 1);
+  }, 40);
+}, { passive: true });
+
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend', e => {
+  const diff = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(diff) > 50) {
+    if (diff < 0) goTo(current + 1);
+    else goTo(current - 1);
+  }
+}, { passive: true });
+
+slides[0].classList.add('active');
+hintTimeout = setTimeout(() => navHint.classList.remove('show'), 4000);
+
+function setVH() {
+  let vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', vh + 'px');
+}
+setVH();
+window.addEventListener('resize', setVH);
+</script>
+</body>
+</html>
